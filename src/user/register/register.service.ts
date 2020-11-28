@@ -8,14 +8,16 @@ import { User, UserDocument } from '../shared/schemas/user.schema';
 export class RegisterService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {}
+  ) { }
 
   async create(registerUserDto: RegisterUserDto): Promise<User> {
     const create = new this.userModel(registerUserDto);
     return create.save();
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+  async findUser(userName: string, email): Promise<boolean> {
+    const user = await this.userModel.find({ $or: [{ userName }, { email }] }).exec();
+    return user.length > 0 ? true : false;
   }
+
 }

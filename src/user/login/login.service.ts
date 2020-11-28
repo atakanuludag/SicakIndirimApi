@@ -7,10 +7,10 @@ import { User, UserDocument } from '../shared/schemas/user.schema';
 export class LoginService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
-  ) {}
-    
+  ) { }
+
   async findUser(userName: string): Promise<User> {
-    const find = await this.userModel.find({userName: userName}).exec();
+    const find = await this.userModel.find({ userName }).exec();
     return find.length > 0 ? find[0] : null
   }
 }
