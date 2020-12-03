@@ -6,11 +6,14 @@ import { AppService } from './app.service';
 
 import { UserModule } from './user/user.module';
 
+import { DenemeModule } from './deneme/deneme.module';
+
 
 @Module({
   imports: [
     MongooseModule.forRoot('mongodb://localhost/sicak_firsatlar'),
-    UserModule
+    UserModule,
+    DenemeModule
   ],
   controllers: [],
   providers: [AppService],

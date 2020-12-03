@@ -1,27 +1,29 @@
 import { Module } from '@nestjs/common';
-
-import { RegisterController } from './register/register.controller';
-import { RegisterService } from './register/register.service';
-
-
-import { LoginController } from './login/login.controller';
-import { LoginService } from './login/login.service';
-
-
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './shared/schemas/user.schema';
 
-
+import { UserController } from './user.controller';
+import { User, UserSchema } from './schemas/user.schema';
+import { UserService } from './user.service';;
 import { UserMessage } from '../common/messages/user.message';
 
+import { jwtConstants } from './constants';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    PassportModule,
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '60s' },
+    })
   ],
-  controllers: [RegisterController, LoginController],
-  providers: [UserMessage, RegisterService, LoginService],
+  controllers: [UserController],
+  providers: [UserMessage, UserService, LocalStrategy, JwtStrategy],
 })
 
 export class UserModule {}
