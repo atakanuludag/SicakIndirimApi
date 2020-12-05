@@ -1,55 +1,24 @@
-import { Body, Controller, HttpException, HttpStatus, Post } from '@nestjs/common';
-import { randomBytes, scrypt } from 'crypto';
+import { Body, Controller, HttpException, HttpStatus, Post, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UserMessage } from '../common/messages/user.message';
-
+import { LocalAuthGuard } from '../common/guards/local-auth.guard';
+import { PasswordHelper } from '../common/helpers/password.helper';
 
 
 @Controller()
 export class UserController {
   constructor(
     private readonly service: UserService,
-    private readonly message: UserMessage
+    private readonly message: UserMessage,
+    private passwordHelper: PasswordHelper
   ) {}
 
-  async verifyPasswordHash(password: string, hash: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const [salt, key] = hash.split(":");
-      scrypt(password, salt, 64, (err, derivedKey) => {
-          if (err) reject(err);
-          if(key == derivedKey.toString('hex')){
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-      });
-    })
-  }
-
-  async passwordHash(password: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const salt = randomBytes(16).toString("hex");
-      scrypt(password, salt, 64, (err, derivedKey) => {
-        const hash = salt + ":" + derivedKey.toString('hex');
-        resolve(hash);
-      });
-    });
-  }
-  
+  @UseGuards(LocalAuthGuard)
   @Post('user/login')
-  async login(@Body() registerUserDto: LoginUserDto) {
-    const user = await this.service.findUser(registerUserDto.userName);
-    if(!user) throw new HttpException('NO_CONTENT', HttpStatus.NO_CONTENT);
-    const check = await this.verifyPasswordHash(registerUserDto.password, user.password);
-    if(!check){
-      throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
-    } else {
-      return this.service.login(user)
-
-      //throw new HttpException('OK', HttpStatus.OK);
-    }
+  async login(@Request() req) {
+    return this.service.login(req.user);
   }
   
 
@@ -64,7 +33,7 @@ export class UserController {
       atakan: this.message.REGISTER_EXISTING_USER
     }, HttpStatus.BAD_REQUEST);
     
-    registerUserDto.password = await this.passwordHash(registerUserDto.password);
+    registerUserDto.password = await this.passwordHelper.passwordHash(registerUserDto.password);
     await this.service.create(registerUserDto);
   }
   

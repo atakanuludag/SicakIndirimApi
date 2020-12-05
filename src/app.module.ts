@@ -1,11 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppService } from './app.service';
-
-//import { CatsModule } from './register/register.module';
-
 import { UserModule } from './user/user.module';
-
 import { DenemeModule } from './deneme/deneme.module';
 
 
