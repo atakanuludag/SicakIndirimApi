@@ -10,10 +10,13 @@ import { Config } from '../app.config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { PasswordHelper } from '../common/helpers/password.helper';
-
+import { ExceptionHelper } from '../common/helpers/exception.helper';
+import { CoreMessage } from '../common/messages/core.message';
 
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+
+
 
 @Module({
   imports: [
@@ -25,7 +28,7 @@ import { PassportModule } from '@nestjs/passport';
     })
   ],
   controllers: [UserController],
-  providers: [LocalStrategy, JwtStrategy, PasswordHelper, UserMessage, UserService],
+  providers: [LocalStrategy, JwtStrategy, PasswordHelper, ExceptionHelper, CoreMessage, UserMessage, UserService],
 })
 
 export class UserModule {}

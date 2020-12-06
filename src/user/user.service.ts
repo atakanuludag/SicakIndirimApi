@@ -7,7 +7,6 @@ import { User, UserDocument } from './schemas/user.schema';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { PasswordHelper } from '../common/helpers/password.helper';
 
-
 @Injectable()
 export class UserService {
   constructor(
@@ -16,29 +15,24 @@ export class UserService {
     private passwordHelper: PasswordHelper
   ) { }
 
-  async findUser(userName: string): Promise<IUser> {
-    const find = await this.userModel.find({ userName }).exec();
-    return find.length > 0 ? find[0] : null
-  }
-
   async login(user: IUser) {
-    const payload = { username: user.userName, sub: user.id };
+    const payload = { userName: user.userName, userId: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
-  
-  async create(registerUserDto: RegisterUserDto): Promise<User> {
+
+  async register(registerUserDto: RegisterUserDto): Promise<User> {
     const create = new this.userModel(registerUserDto);
     return create.save();
   }
 
-  async validateUser(userName: string, pass: string): Promise<any> {
+  async validateUser(userName: string, pass: string): Promise<IUser | null> {
     let findUser: IUser | null = null;
     const find = await this.userModel.find({ userName }).exec();
     findUser = find.length > 0 ? find[0] : null;
-    
-    if(findUser != null){
+
+    if (findUser != null) {
       const check = await this.passwordHelper.verifyPasswordHash(pass, findUser.password);
       return check ? findUser : null;
     }
@@ -48,6 +42,11 @@ export class UserService {
   async registerFindUser(userName: string, email: string): Promise<boolean> {
     const user = await this.userModel.find({ $or: [{ userName }, { email }] }).exec();
     return user.length > 0 ? true : false;
+  }
+
+  async findUserById(id: string): Promise<IUser> {
+    const find = await this.userModel.findById(id);
+    return find;
   }
 
 

@@ -10,6 +10,7 @@ async function bootstrap() {
   });
   app.setGlobalPrefix(Config.apiPrefix);
   app.useGlobalPipes(new ValidationPipe()); //Dtolarda tanımlanan tüm validasyonları uygulamaya yarar.
+
   await app.listen(Config.apiPort);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
