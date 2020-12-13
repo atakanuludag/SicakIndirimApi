@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from './interfaces/user.interface';
+import { IJwtPayload } from './interfaces/jwt-payload.interface';
 import { User, UserDocument } from './schemas/user.schema';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { PasswordHelper } from '../common/helpers/password.helper';
@@ -20,7 +21,7 @@ export class UserService {
 
   async login(user: IUser) {
     try {
-      const payload = { userName: user.userName, userId: user.id };
+      const payload: IJwtPayload = { userName: user.userName, userId: user.id, admin: user.admin };
       return { access_token: this.jwtService.sign(payload) };
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -39,7 +40,7 @@ export class UserService {
   async validateUser(userName: string, pass: string): Promise<IUser | null> {
     try {
       let findUser: IUser | null = null;
-      const find = await this.userModel.find({ userName }).exec();
+      const find = await this.userModel.find({ userName }).select('+password').exec();
       findUser = find.length > 0 ? find[0] : null;
 
       if (findUser != null) {

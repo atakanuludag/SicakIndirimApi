@@ -12,7 +12,7 @@ export class User {
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, select: false })
   password: string;
 
   @Prop({ required: true })
@@ -20,6 +20,9 @@ export class User {
 
   @Prop({ required: true })
   surname: string;
+
+  @Prop({ default: false, select: false })
+  admin: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
