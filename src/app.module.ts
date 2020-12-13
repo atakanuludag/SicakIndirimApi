@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Config } from './app.config';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { DenemeModule } from './deneme/deneme.module';
+import { HotDealModule } from './hot-deal/hot-deal.module';
 
 
 
@@ -11,7 +11,7 @@ import { DenemeModule } from './deneme/deneme.module';
   imports: [
     MongooseModule.forRoot(Config.mongoDbConnectionString),
     UserModule,
-    DenemeModule
+    HotDealModule
   ],
   controllers: [],
   providers: [AppService],

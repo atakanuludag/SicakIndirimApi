@@ -1,21 +1,20 @@
-import { Body, Controller, HttpException, HttpStatus, Post, Get, UseGuards, Request, Param } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Get, UseGuards, Request, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { PasswordHelper } from '../common/helpers/password.helper';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
-import { UserMessage } from '../common/messages/user.message';
-import { CoreMessage } from '../common/messages/core.message';
+import { UserMessage, CoreMessage } from '../common/messages';
 import { IUser } from './interfaces/user.interface';
 
 @Controller()
 export class UserController {
   constructor(
     private readonly service: UserService,
-    private readonly userMessage: UserMessage,
     private passwordHelper: PasswordHelper,
-    private coreMessage: CoreMessage
+    private readonly userMessage: UserMessage,
+    private readonly coreMessage: CoreMessage
   ) { }
 
   @UseGuards(LocalAuthGuard)
@@ -26,41 +25,26 @@ export class UserController {
 
   @Post('user/register')
   async create(@Body() registerUserDto: RegisterUserDto) {
-    try {
-      const userCheck = await this.service.registerFindUser(registerUserDto.userName, registerUserDto.email);
-      if (userCheck) return new ExceptionHelper(this.userMessage.REGISTER_EXISTING_USER, HttpStatus.BAD_REQUEST);
-      registerUserDto.password = await this.passwordHelper.passwordHash(registerUserDto.password);
-      await this.service.register(registerUserDto);
-    } catch(err){
-      return err
-    }
-
+    const userCheck = await this.service.registerFindUser(registerUserDto.userName, registerUserDto.email);
+    if (userCheck) throw new ExceptionHelper(this.userMessage.REGISTER_EXISTING_USER, HttpStatus.BAD_REQUEST);
+    registerUserDto.password = await this.passwordHelper.passwordHash(registerUserDto.password);
+    await this.service.register(registerUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('user/profile')
   async getProfile(@Request() req) {
-    try {
-      const id = req.user.userId;
-      const user: IUser = await this.service.findUserById(id);
-      return user;
-    } catch (err) {
-      throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    const userId = req.user.userId;
+    const user: IUser = await this.service.findUserById(userId);
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('user/:id')
   async getUserById(@Param('id') id: string) {
-    try {
-      const user: IUser = await this.service.findUserById(id);
-      if (!user.id) throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
-      return user;
-    } catch (err) {
-      throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    const user: IUser = await this.service.findUserById(id);
+    if (!user.id) throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
+    return user;
   }
 
 }
-
-//https://stackoverflow.com/questions/55820591/nestjs-jwt-authentication-returns-401
