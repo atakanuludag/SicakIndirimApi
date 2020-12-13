@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEmail, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsString, IsUrl, IsDateString } from 'class-validator';
 
 export class CreateHotDealDto {
     @IsNotEmpty()
@@ -12,6 +12,9 @@ export class CreateHotDealDto {
     @IsNotEmpty()
     @IsString()
     content: string;
+
+    @IsDateString()
+    dueDate: string;
 
     @IsUrl()
     url: string;

@@ -17,8 +17,11 @@ export class HotDeal {
   @Prop({ required: true })
   content: string;
   
-  @Prop({ type: "string" })
+  @Prop({ })
   url: string;
+  
+  @Prop({ })
+  dueDate: Date;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
   user: User;
