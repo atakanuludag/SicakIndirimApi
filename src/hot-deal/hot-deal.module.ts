@@ -8,12 +8,14 @@ import { HotDealService } from './hot-deal.service';
 import { CoreMessage, HotDealMessage } from '../common/messages';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 
+import { QueryHelper } from '../common/helpers/query.helper';
+
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: HotDeal.name, schema: HotDealSchema }]),
   ],
   controllers: [HotDealController],
-  providers: [ExceptionHelper, CoreMessage, HotDealMessage, HotDealService],
+  providers: [ExceptionHelper, CoreMessage, QueryHelper, HotDealMessage, HotDealService],
 })
 
 export class HotDealModule {}
