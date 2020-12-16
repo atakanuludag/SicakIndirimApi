@@ -4,6 +4,7 @@ import { Config } from './app.config';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { HotDealModule } from './hot-deal/hot-deal.module';
+import { CommentModule } from './comment/comment.module';
 
 
 
@@ -11,7 +12,8 @@ import { HotDealModule } from './hot-deal/hot-deal.module';
   imports: [
     MongooseModule.forRoot(Config.mongoDbConnectionString),
     UserModule,
-    HotDealModule
+    HotDealModule,
+    CommentModule
   ],
   controllers: [],
   providers: [AppService],

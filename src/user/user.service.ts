@@ -8,7 +8,7 @@ import { User, UserDocument } from './schemas/user.schema';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { PasswordHelper } from '../common/helpers/password.helper';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
-import { UserMessage, CoreMessage } from '../common/messages';
+import { CoreMessage } from '../common/messages';
 
 @Injectable()
 export class UserService {

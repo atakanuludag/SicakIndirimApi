@@ -5,7 +5,7 @@ import { HotDealController } from './hot-deal.controller';
 import { HotDeal, HotDealSchema } from './schemas/hot-deal.schema';
 import { HotDealService } from './hot-deal.service';
 
-import { CoreMessage, HotDealMessage } from '../common/messages';
+import { CoreMessage } from '../common/messages';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 
 import { QueryHelper } from '../common/helpers/query.helper';
@@ -15,7 +15,7 @@ import { QueryHelper } from '../common/helpers/query.helper';
     MongooseModule.forFeature([{ name: HotDeal.name, schema: HotDealSchema }]),
   ],
   controllers: [HotDealController],
-  providers: [ExceptionHelper, CoreMessage, QueryHelper, HotDealMessage, HotDealService],
+  providers: [ExceptionHelper, CoreMessage, QueryHelper, HotDealService],
 })
 
 export class HotDealModule {}

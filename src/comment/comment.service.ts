@@ -1,54 +1,53 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
-import { IHotDealList } from './interfaces/hot-deal-list.interface';
-import { IHotDeal } from './interfaces/hot-deal.interface';
-import { HotDeal, HotDealDocument } from './schemas/hot-deal.schema';
-import { CreateHotDealDto } from './dto/create-hot-deal.dto';
+import { ICommentList } from './interfaces/comment-list.interface';
+import { IComment } from './interfaces/comment.interface';
+import { Comment, CommentDocument } from './schemas/comment.schema';
+import { CreateCommentDto } from './dto/create-comment.dto';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from '../common/messages';
 import { IQuery } from '../common/interfaces/query.interface';
 
 
 @Injectable()
-export class HotDealService {
+export class CommentService {
   constructor(
-    @InjectModel(HotDeal.name) private readonly hotDealModule: Model<HotDealDocument>,
+    @InjectModel(Comment.name) private readonly commentModule: Model<CommentDocument>,
     private readonly coreMessage: CoreMessage
   ) { }
 
   
-  async create(createHotDealDto: CreateHotDealDto, userId: string): Promise<HotDeal> {
+  async create(createcommentDto: CreateCommentDto, userId: string): Promise<Comment> {
     try {
-      const data = {...createHotDealDto, user: userId };
-      const create = new this.hotDealModule(data);
+      const data = {...createcommentDto, user: userId };
+      const create = new this.commentModule(data);
       return create.save();
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async findById(id: string): Promise<IHotDeal> {
+  async findById(id: string): Promise<IComment> {
     try {
-      const find = await this.hotDealModule.findById(id).populate("user").exec();
+      const find = await this.commentModule.findById(id).populate("user").populate("hotDeal").exec();
       return find;
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async getItems(query: IQuery): Promise<IHotDealList> {
+  async getItems(query: IQuery): Promise<ICommentList> {
     try {
-      const items = await this.hotDealModule.find(query.searchQuery)
+      const items = await this.commentModule.find(query.searchQuery)
       .populate("user")
       .skip(query.pagination.skip)
       .limit(query.pagination.pageSize)
       .sort(query.order).exec();
 
-      const count = await this.hotDealModule.find(query.searchQuery).count();
+      const count = await this.commentModule.find(query.searchQuery).count();
 
-      const data: IHotDealList = {
+      const data: ICommentList = {
         results: items,
         currentPage: query.pagination.page,
         currentPageSize: items.length,
