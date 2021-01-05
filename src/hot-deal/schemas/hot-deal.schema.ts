@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
+import { Category } from '../../category/schemas/category.schema';
 
 export type HotDealDocument = HotDeal & Document;
 
@@ -25,6 +26,9 @@ export class HotDeal {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
   user: User;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Category" })
+  category: Category;
 
   @Prop({ default: Date.now })
   createdDate: Date;

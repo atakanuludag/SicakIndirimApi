@@ -31,7 +31,7 @@ export class HotDealService {
 
   async findById(id: string): Promise<IHotDeal> {
     try {
-      const find = await this.hotDealModule.findById(id).populate("user").exec();
+      const find = await this.hotDealModule.findById(id).populate("user").populate("category").exec();
       return find;
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -42,6 +42,7 @@ export class HotDealService {
     try {
       const items = await this.hotDealModule.find(query.searchQuery)
       .populate("user")
+      .populate("category")
       .skip(query.pagination.skip)
       .limit(query.pagination.pageSize)
       .sort(query.order).exec();

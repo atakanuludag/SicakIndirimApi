@@ -13,6 +13,10 @@ export class CreateHotDealDto {
     @IsString()
     content: string;
 
+    @IsNotEmpty()
+    @IsString()
+    category: string;
+
     @IsDateString()
     dueDate: string;
 
