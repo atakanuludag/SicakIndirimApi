@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Get, UseGuards, Request, Param } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Get, UseGuards, Request, Param, SetMetadata } from '@nestjs/common';
 import { UserService } from './user.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -7,6 +7,11 @@ import { PasswordHelper } from '../common/helpers/password.helper';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { UserMessage, CoreMessage } from '../common/messages';
 import { IUser } from './interfaces/user.interface';
+
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/roles.decorator';
+import UserRole from '../common/enums/user-role.enum';
+
 
 @Controller()
 export class UserController {
@@ -31,8 +36,9 @@ export class UserController {
     await this.service.register(registerUserDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('user/profile')
+  @Roles(UserRole.USER) //test amaçlı eklendi.
   async getProfile(@Request() req) {
     const userId = req.user.userId;
     const user: IUser = await this.service.findUserById(userId);

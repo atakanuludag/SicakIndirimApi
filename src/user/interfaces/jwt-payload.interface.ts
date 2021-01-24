@@ -1,5 +1,7 @@
+import UserRole from '../../common/enums/user-role.enum';
+
 export interface IJwtPayload {
     readonly userId: string;
     readonly userName: string;
-    readonly admin: boolean;
+    readonly roles: string[];
 }

@@ -3,8 +3,6 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { Config } from './app.config';
 
-//https://stackoverflow.com/questions/62996811/axios-custom-instance-not-working-properly-with-next-js
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     //bodyParser: true,

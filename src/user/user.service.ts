@@ -21,7 +21,7 @@ export class UserService {
 
   async login(user: IUser) {
     try {
-      const payload: IJwtPayload = { userName: user.userName, userId: user.id, admin: user.admin };
+      const payload: IJwtPayload = { userName: user.userName, userId: user.id, roles: user.roles };
       return { access_token: this.jwtService.sign(payload) };
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
