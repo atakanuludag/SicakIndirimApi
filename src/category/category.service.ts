@@ -29,7 +29,7 @@ export class CategoryService {
   async update(updateCategoryDto: UpdateCategoryDto, id: string): Promise<ICategory> {
     try {
       const find = await this.categoryModule.findById(id);
-      return find.update(updateCategoryDto);
+      return find.updateOne(updateCategoryDto);
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -48,6 +48,14 @@ export class CategoryService {
     try {
       const items = await this.categoryModule.find().exec();
       return items;
+    } catch (err) {
+      throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async delete(id: string): Promise<void> {
+    try {;
+      await this.categoryModule.deleteOne({_id: id});
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }

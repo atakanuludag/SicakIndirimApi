@@ -36,9 +36,8 @@ export class UserController {
     await this.service.register(registerUserDto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('user/profile')
-  @Roles(UserRole.USER) //test amaçlı eklendi.
   async getProfile(@Request() req) {
     const userId = req.user.userId;
     const user: IUser = await this.service.findUserById(userId);
