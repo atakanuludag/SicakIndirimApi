@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
 import { HotDealModule } from './hot-deal/hot-deal.module';
 import { CommentModule } from './comment/comment.module';
+import { ReportModule } from './report/report.module';
 
 
 
@@ -18,7 +19,8 @@ import { CommentModule } from './comment/comment.module';
     UserModule,
     CategoryModule,
     HotDealModule,
-    CommentModule
+    CommentModule,
+    ReportModule
   ],
   controllers: [],
   providers: [],

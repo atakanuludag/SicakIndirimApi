@@ -75,5 +75,14 @@ export class UserService {
     }
   }
 
+  async getItems(): Promise<IUser[]> {
+    try {
+      const items = await this.userModel.find().exec();
+      return items;
+    } catch (err) {
+      throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 
 }

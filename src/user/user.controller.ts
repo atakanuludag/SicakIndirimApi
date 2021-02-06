@@ -38,18 +38,26 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user/profile')
-  async getProfile(@Request() req) {
+  async profile(@Request() req) {
     const userId = req.user.userId;
     const user: IUser = await this.service.findUserById(userId);
     return user;
   }
 
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.ADMIN)
   @Get('user/:id')
-  async getUserById(@Param('id') id: string) {
+  async userById(@Param('id') id: string) {
     const user: IUser = await this.service.findUserById(id);
     if (!user.id) throw new ExceptionHelper(this.coreMessage.BAD_REQUEST, HttpStatus.BAD_REQUEST);
     return user;
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Get('user')
+  async list() {
+    return await this.service.getItems();
   }
 
 }

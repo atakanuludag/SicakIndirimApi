@@ -45,7 +45,7 @@ export class CommentService {
       .limit(query.pagination.pageSize)
       .sort(query.order).exec();
 
-      const count = await this.commentModule.find(query.searchQuery).count();
+      const count = await this.commentModule.find(query.searchQuery).countDocuments();
 
       const data: ICommentList = {
         results: items,

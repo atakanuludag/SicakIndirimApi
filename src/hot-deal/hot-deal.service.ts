@@ -47,7 +47,7 @@ export class HotDealService {
       .limit(query.pagination.pageSize)
       .sort(query.order).exec();
 
-      const count = await this.hotDealModule.find(query.searchQuery).count();
+      const count = await this.hotDealModule.find(query.searchQuery).countDocuments();
 
       const data: IHotDealList = {
         results: items,
