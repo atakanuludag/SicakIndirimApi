@@ -13,7 +13,7 @@ import { IQuery } from '../common/interfaces/query.interface';
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectModel(Comment.name) private readonly commentModule: Model<CommentDocument>,
+    @InjectModel(Comment.name) private readonly commentModel: Model<CommentDocument>,
     private readonly coreMessage: CoreMessage
   ) { }
 
@@ -21,7 +21,7 @@ export class CommentService {
   async create(createcommentDto: CreateCommentDto, userId: string): Promise<Comment> {
     try {
       const data = {...createcommentDto, user: userId };
-      const create = new this.commentModule(data);
+      const create = new this.commentModel(data);
       return create.save();
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -30,7 +30,7 @@ export class CommentService {
 
   async findById(id: string): Promise<IComment> {
     try {
-      const find = await this.commentModule.findById(id).populate("user").populate("hotDeal").exec();
+      const find = await this.commentModel.findById(id).populate("user").populate("hotDeal").exec();
       return find;
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -39,13 +39,13 @@ export class CommentService {
 
   async getItems(query: IQuery): Promise<ICommentList> {
     try {
-      const items = await this.commentModule.find(query.searchQuery)
+      const items = await this.commentModel.find(query.searchQuery)
       .populate("user")
       .skip(query.pagination.skip)
       .limit(query.pagination.pageSize)
       .sort(query.order).exec();
 
-      const count = await this.commentModule.find(query.searchQuery).countDocuments();
+      const count = await this.commentModel.find(query.searchQuery).countDocuments();
 
       const data: ICommentList = {
         results: items,

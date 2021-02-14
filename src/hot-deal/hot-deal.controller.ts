@@ -34,9 +34,9 @@ export class HotDealController {
   
   @UseGuards(JwtAuthGuard)
   @Post('hotDeal')
-  async create(@Body() createHotDealDto: CreateHotDealDto, @Request() req) {
+  async create(@Body() body: CreateHotDealDto, @Request() req) {
     const userId = req.user.userId;
-    await this.service.create(createHotDealDto, userId);
+    await this.service.create(body, userId);
   }
 
   

@@ -12,14 +12,14 @@ import { CoreMessage } from '../common/messages';
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectModel(Category.name) private readonly categoryModule: Model<CategoryDocument>,
+    @InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>,
     private readonly coreMessage: CoreMessage
   ) { }
 
   
   async create(createCategoryDto: CreateCategoryDto): Promise<ICategory> {
     try {
-      const create = new this.categoryModule(createCategoryDto);
+      const create = new this.categoryModel(createCategoryDto);
       return create.save();
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -28,7 +28,7 @@ export class CategoryService {
 
   async update(updateCategoryDto: UpdateCategoryDto, id: string): Promise<ICategory> {
     try {
-      const find = await this.categoryModule.findById(id);
+      const find = await this.categoryModel.findById(id);
       return find.updateOne(updateCategoryDto);
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -37,7 +37,7 @@ export class CategoryService {
 
   async findById(id: string): Promise<ICategory> {
     try {
-      const find = await this.categoryModule.findById(id).exec();
+      const find = await this.categoryModel.findById(id).exec();
       return find;
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -46,7 +46,7 @@ export class CategoryService {
 
   async getItems(): Promise<ICategory[]> {
     try {
-      const items = await this.categoryModule.find().exec();
+      const items = await this.categoryModel.find().exec();
       return items;
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,7 +55,7 @@ export class CategoryService {
 
   async delete(id: string): Promise<void> {
     try {;
-      await this.categoryModule.deleteOne({_id: id});
+      await this.categoryModel.deleteOne({_id: id});
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }

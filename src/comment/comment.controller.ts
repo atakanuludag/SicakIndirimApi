@@ -34,9 +34,9 @@ export class CommentController {
   
   @UseGuards(JwtAuthGuard)
   @Post('comment')
-  async create(@Body() createCommentDto: CreateCommentDto, @Request() req) {
+  async create(@Body() body: CreateCommentDto, @Request() req) {
     const userId = req.user.userId;
-    await this.service.create(createCommentDto, userId);
+    await this.service.create(body, userId);
   }
 
   

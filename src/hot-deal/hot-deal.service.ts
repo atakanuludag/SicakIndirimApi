@@ -14,7 +14,7 @@ import { IQuery } from '../common/interfaces/query.interface';
 @Injectable()
 export class HotDealService {
   constructor(
-    @InjectModel(HotDeal.name) private readonly hotDealModule: Model<HotDealDocument>,
+    @InjectModel(HotDeal.name) private readonly hotDealModel: Model<HotDealDocument>,
     private readonly coreMessage: CoreMessage
   ) { }
 
@@ -22,7 +22,7 @@ export class HotDealService {
   async create(createHotDealDto: CreateHotDealDto, userId: string): Promise<HotDeal> {
     try {
       const data = {...createHotDealDto, user: userId };
-      const create = new this.hotDealModule(data);
+      const create = new this.hotDealModel(data);
       return create.save();
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -31,7 +31,7 @@ export class HotDealService {
 
   async findById(id: string): Promise<IHotDeal> {
     try {
-      const find = await this.hotDealModule.findById(id).populate("user").populate("category").exec();
+      const find = await this.hotDealModel.findById(id).populate("user").populate("category").exec();
       return find;
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -40,14 +40,14 @@ export class HotDealService {
 
   async getItems(query: IQuery): Promise<IHotDealList> {
     try {
-      const items = await this.hotDealModule.find(query.searchQuery)
+      const items = await this.hotDealModel.find(query.searchQuery)
       .populate("user")
       .populate("category")
       .skip(query.pagination.skip)
       .limit(query.pagination.pageSize)
       .sort(query.order).exec();
 
-      const count = await this.hotDealModule.find(query.searchQuery).countDocuments();
+      const count = await this.hotDealModel.find(query.searchQuery).countDocuments();
 
       const data: IHotDealList = {
         results: items,

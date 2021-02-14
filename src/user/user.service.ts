@@ -3,9 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from './interfaces/user.interface';
-import { IJwtPayload } from './interfaces/jwt-payload.interface';
+import { IUserEntity } from './interfaces/user.entity.interface';
 import { User, UserDocument } from './schemas/user.schema';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { UpdateAdminUserDto } from './dto/update-user.dto';
 import { PasswordHelper } from '../common/helpers/password.helper';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from '../common/messages';
@@ -21,7 +22,7 @@ export class UserService {
 
   async login(user: IUser) {
     try {
-      const payload: IJwtPayload = { userName: user.userName, userId: user.id, roles: user.roles };
+      const payload: IUserEntity = { userName: user.userName, userId: user.id, roles: user.roles };
       return { 
         access_token: this.jwtService.sign(payload),
         user_id: user.id,
@@ -57,7 +58,7 @@ export class UserService {
     }
   }
 
-  async registerFindUser(userName: string, email: string): Promise<boolean> {
+  async findUser(userName: string | undefined, email: string | undefined): Promise<boolean> {
     try {
       const user = await this.userModel.find({ $or: [{ userName }, { email }] }).exec();
       return user.length > 0 ? true : false;
@@ -79,6 +80,15 @@ export class UserService {
     try {
       const items = await this.userModel.find().exec();
       return items;
+    } catch (err) {
+      throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async update(updateDto: UpdateAdminUserDto, id: string): Promise<IUser> {
+    try {
+      const find = await this.userModel.findById(id);
+      return find.updateOne(updateDto);
     } catch (err) {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }

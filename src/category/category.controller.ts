@@ -2,13 +2,13 @@ import { Body, Controller, Get, Param, HttpStatus, Post, UseGuards, Patch, Delet
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ParamsDto } from './dto/params.dto';
+import { ParamsDto } from '../common/params.dto';
 import { CategoryService } from './category.service';
 import { ICategory } from './interfaces/category.interface';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from '../common/messages';
 import { RolesGuard } from '../common/guards/roles.guard';
-import { Roles } from '../common/roles.decorator';
+import { Roles } from '../common/decorators/roles.decorator';
 import UserRole from '../common/enums/user-role.enum';
 
 @Controller()
@@ -36,8 +36,8 @@ export class CategoryController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Post('category')
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
-    await this.service.create(createCategoryDto);
+  async create(@Body() body: CreateCategoryDto) {
+    await this.service.create(body);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
