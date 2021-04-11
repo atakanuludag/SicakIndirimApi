@@ -2,11 +2,11 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
-import { IUser } from './interfaces/user.interface';
-import { IUserEntity } from './interfaces/user.entity.interface';
+import { IUser } from '../common/interfaces/user.interface';
+import { IUserEntity } from '../common/interfaces/user.entity.interface';
 import { User, UserDocument } from './schemas/user.schema';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { UpdateAdminUserDto } from './dto/update-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { PasswordHelper } from '../common/helpers/password.helper';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from '../common/messages';
@@ -85,7 +85,7 @@ export class UserService {
     }
   }
 
-  async update(updateDto: UpdateAdminUserDto, id: string): Promise<IUser> {
+  async update(updateDto: UpdateUserDto, id: string): Promise<IUser> {
     try {
       const find = await this.userModel.findById(id);
       return find.updateOne(updateDto);

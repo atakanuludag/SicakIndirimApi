@@ -1,11 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
 import { IHotDealList } from './interfaces/hot-deal-list.interface';
 import { IHotDeal } from './interfaces/hot-deal.interface';
 import { HotDeal, HotDealDocument } from './schemas/hot-deal.schema';
 import { CreateHotDealDto } from './dto/create-hot-deal.dto';
+import { UpdateHotDealDto } from './dto/update-hot-deal.dto';
 import { ExceptionHelper } from '../common/helpers/exception.helper';
 import { CoreMessage } from '../common/messages';
 import { IQuery } from '../common/interfaces/query.interface';
@@ -63,6 +63,24 @@ export class HotDealService {
       throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async update(updateDto: UpdateHotDealDto, id: string): Promise<IHotDealList> {
+    try {
+      const find = await this.hotDealModel.findById(id);
+      return find.updateOne(updateDto);
+    } catch (err) {
+      throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async delete(id: string): Promise<void> {
+    try {;
+      await this.hotDealModel.deleteOne({_id: id});
+    } catch (err) {
+      throw new ExceptionHelper(this.coreMessage.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 
 
 
