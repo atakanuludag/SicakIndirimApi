@@ -87,7 +87,7 @@ export class UserController {
     const findEmail = userData.email !== body.email ? body.email : undefined;
 
     const userCheck = await this.service.findUser(findUserName, findEmail);
-    
+
     if (userCheck) throw new ExceptionHelper(this.userMessage.EXISTING_USER, HttpStatus.BAD_REQUEST);
     if(body.password) body.password = await this.passwordHelper.passwordHash(body.password);
     await this.service.update(body, params.id);
